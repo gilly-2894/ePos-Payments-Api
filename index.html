@@ -26,6 +26,18 @@
       background-color: bisque;
       height: 400px;
     }
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
   </style>
 
   <body class="bg-light">
@@ -34,7 +46,10 @@
         <h2>ePos Example Application</h2>
         <p class="lead">
           Below is a test application which accepts payments from your
-          electronic Point of Sale (ePOS) system with Fiserv's ePOS Payments
+          electronic Point of Sale (ePOS) system with Fiserv's ePOS Payments.
+          <br/>
+          <a href="https://api-catalog.fiserv.com/docs/ipp-cloudpoi-api-v1-0/ZG9jOjEwNjI1OTAy-welcome-to-e-pos-payments">Full Spec Documentation</a>
+
         </p>
       </div>
 
@@ -54,7 +69,7 @@
                   Valid API Secret is required.
                 </div>
               </div>
-              <div class="col-md-4 mb-3">
+              <div class="col-md-4 mb-3 align-items-center justify-content-center">
                 <a href="https://www.google.com">How to get credentials?</a>
               </div>
             </div>
@@ -79,8 +94,8 @@
 
             <div class="row">
               <div class="form-group col-md-4 mb-3">
-                <label for="saleId">Sale Id</label>
-                <select class="custom-select d-block w-100" id="saleId" required>
+                <label for="saleIdDropdown">Sale Id</label>
+                <select class="custom-select d-block w-100" id="saleIdDropdown" onchange="updateSaleIdInRequestBody()" required>
                   <option disabled selected value>
                     -- select an option --
                   </option>
@@ -95,8 +110,8 @@
                 </div>
               </div>
               <div class="form-group col-md-4 mb-3">
-                <label for="poiId">POI Id</label>
-                <select class="custom-select d-block w-100 mb-3" id="poiId" required>
+                <label for="poiIdDropdown">POI Id</label>
+                <select class="custom-select d-block w-100 mb-3" id="poiIdDropdown" onchange="updatePoiIdInRequestBody()" required>
                   <option disabled selected value>
                     -- select an option --
                   </option>
@@ -106,12 +121,13 @@
                   <option>poi-02</option>
                   <option>poi-03</option>
                 </select>
-                <div class="invalid-feedback">POI ID has to be selected.</div>
+                <div class=" invalid-feedback">POI ID has to be selected.
+                </div>
               </div>
               <div class="col-md-4 mb-3">
                 <label for="amount">Amount</label>
                 <input type="number" class="form-control" style="-webkit-appearance: none" id="amount" min="0" value="0"
-                  step=".01" required />
+                  step=".01" onkeyup="updateAmountInRequestBody()" required />
                 <div class="invalid-feedback">
                   A valid amount is required.
                 </div>
@@ -129,24 +145,14 @@
             <div class="row">
               <div class="col-md-6">
                 <div data-json-request-body class="overflow-auto mt-3" style="max-height: 200">
-                  <!-- <label for="apiKey">Request</label>
-                            <input type="text" class="form-control" id="apiKey" placeholder="" value="" required>
-                            <div class="invalid-feedback">
-                              Valid API Key is required.
-                            </div> -->
                   <label for="apiKey">Request</label>
-                  <textarea class="codemirror-textarea" id="requestBody"></textarea>
+                  <textarea class="codemirror-textarea" id="codemirror-textarea-requestBody"></textarea>
                 </div>
               </div>
-              <div class="col-md-6">  
+              <div class="col-md-6">
                 <div data-json-request-body class="overflow-auto mt-3" style="max-height: 200">
-                  <!-- <label for="apiKey">Request</label>
-                            <input type="text" class="form-control" id="apiKey" placeholder="" value="" required>
-                            <div class="invalid-feedback">
-                              Valid API Key is required.
-                            </div> -->
                   <label for="apiKey">Response</label>
-                  <textarea class="codemirror-textarea" id="responseBody"></textarea>
+                  <textarea class="codemirror-textarea" id="codemirror-textarea-responseBody"></textarea>
                 </div>
               </div>
             </div>

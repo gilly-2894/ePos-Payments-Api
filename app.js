@@ -26,43 +26,83 @@
                 }
             );
 
-            const [input, output] = document.querySelectorAll(".codemirror-textarea")
-            const editor = CodeMirror.fromTextArea(input,
-                {
-                    lineNumbers: true,
-                    lineWrapping: true,
-                    mode: {
-                        name: "javascript",
-                        json: true,
-                        statementIndent: 2
-                    },
-                    theme: "dracula",
-                    autoCloseBrackets: true,
-                    gutters: ['CodeMirror-lint-markers'],
-                    lint: true
-                });
+            const requestCodeMirrorRef = getRequestCodeMirrorRef();
+            requestCodeMirrorRef.setValue(jsonPayment);
 
-            let jsonPayment = "{\n  \"SaleToPOIRequest\": {\n    \"MessageHeader\": {\n      \"MessageClass\": \"Service\",\n      \"MessageCategory\": \"Payment\",\n      \"MessageType\": \"Request\",\n      \"ServiceID\": \"1731207545\",\n      \"SaleID\": \"Salesystem-00000001\",\n      \"POIID\": \"AUTO\"\n    },\n    \"PaymentRequest\": {\n      \"SaleData\": {\n        \"SaleTransactionID\": {\n          \"TransactionID\": \"002285\",\n          \"TimeStamp\": \"2020-10-14T13:10:43+02:00\"\n        },\n        \"TokenRequestedType\": \"Customer\"\n      },\n      \"PaymentTransaction\": {\n        \"AmountsReq\": {\n          \"Currency\": \"EUR\",\n          \"RequestedAmount\": \"40\"\n        }\n      },\n      \"PaymentData\": {\n        \"PaymentType\": \"Normal\"\n      }\n    }\n  }\n}"
-            editor.setValue(jsonPayment);
-            const response = CodeMirror.fromTextArea(output,
-                {
-                    // lineNumbers: true,
-                    // mode: {
-                    //     name: "javascript",
-                    //     json: true,
-                    //     statementIndent: 2
-                    // },
-                    // theme: "dracula",
-                    // autoCloseBrackets: true
-                    mode: 'application/json',
-                    theme: "dracula",
-                    lineNumbers: true,
-                    lint: true,
-                    autoCloseBrackets: true,
-                    gutters: ['CodeMirror-lint-markers']
-                });
 
+            const responseCodeMirrorRef = getResponseCodeMirrorRef();
+            responseCodeMirrorRef.setValue("{}")
         },
         false
     );
 })();
+
+var jsonPayment = "{\n  \"SaleToPOIRequest\": {\n    \"MessageHeader\": {\n      \"MessageClass\": \"Service\",\n      \"MessageCategory\": \"Payment\",\n      \"MessageType\": \"Request\",\n      \"ServiceID\": \"1731207545\",\n      \"SaleID\": \"\",\n      \"POIID\": \"\"\n    },\n    \"PaymentRequest\": {\n      \"SaleData\": {\n        \"SaleTransactionID\": {\n          \"TransactionID\": \"002285\",\n          \"TimeStamp\": \"2020-10-14T13:10:43+02:00\"\n        },\n        \"TokenRequestedType\": \"Customer\"\n      },\n      \"PaymentTransaction\": {\n        \"AmountsReq\": {\n          \"Currency\": \"EUR\",\n          \"RequestedAmount\": \"0\"\n        }\n      },\n      \"PaymentData\": {\n        \"PaymentType\": \"Normal\"\n      }\n    }\n  }\n}";
+var codeMirrorRequestInstance = null;
+var codeMirrorResponseInstance = null;
+
+function getRequestCodeMirrorRef() {
+    var input = document.getElementById("codemirror-textarea-requestBody");
+    var request = CodeMirror.fromTextArea(input,
+    {
+        lineNumbers: true,
+        lineWrapping: true,
+        mode: {
+            name: "javascript",
+            json: true,
+            statementIndent: 2
+        },
+        theme: "dracula",
+        autoCloseBrackets: true,
+        readOnly: true
+    });
+
+    codeMirrorRequestInstance = request;
+    codeMirrorRequestInstance.setSize(null, 580);
+    return request;
+}
+
+function getResponseCodeMirrorRef() {
+    var output = document.getElementById("codemirror-textarea-responseBody");
+    var response = CodeMirror.fromTextArea(output,
+    {
+        lineNumbers: true,
+        lineWrapping: true,
+        mode: {
+            name: "javascript",
+            json: true,
+            statementIndent: 2
+        },
+        theme: "dracula",
+        autoCloseBrackets: true,
+        readOnly: true
+    });
+
+    codeMirrorResponseInstance = response;
+    codeMirrorResponseInstance.setSize(null, 580);
+    return response;
+}
+
+function updateSaleIdInRequestBody() {
+    var regex = /"SaleID": ".*?"/;
+    newValue = document.getElementById("saleIdDropdown").value;
+    newSaleIdJsonField = "\"SaleID\": \"" + newValue + "\"";
+    jsonPayment = jsonPayment.replace(regex, newSaleIdJsonField);
+    codeMirrorRequestInstance.setValue(jsonPayment);
+}
+
+function updatePoiIdInRequestBody() {
+    var regex = /"POIID": ".*?"/;
+    newValue = document.getElementById("poiIdDropdown").value;
+    newPoiIdJsonField = "\"POIID\": \"" + newValue + "\"";
+    jsonPayment = jsonPayment.replace(regex, newPoiIdJsonField);
+    codeMirrorRequestInstance.setValue(jsonPayment);
+}
+
+function updateAmountInRequestBody() {
+    var regex = /"RequestedAmount": ".*?"/;
+    newValue = document.getElementById("amount").value;
+    newAmountJsonField = "\"RequestedAmount\": \"" + newValue + "\"";
+    jsonPayment = jsonPayment.replace(regex, newAmountJsonField);
+    codeMirrorRequestInstance.setValue(jsonPayment);
+}
